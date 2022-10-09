@@ -1,0 +1,40 @@
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "io_bazel_rules_groovy",
+    url = "https://github.com/bazelbuild/rules_groovy/archive/0.0.6.tar.gz",
+    sha256 = "21c7172786623f280402d3b3a2fc92f36568afad5a4f6f5ea38fd1c6897aecf8",
+    strip_prefix = "rules_groovy-0.0.6",
+)
+load("@io_bazel_rules_groovy//groovy:repositories.bzl", "rules_groovy_dependencies")
+
+rules_groovy_dependencies()
+
+RULES_JVM_EXTERNAL_TAG = "2.8"
+RULES_JVM_EXTERNAL_SHA = "79c9850690d7614ecdb72d68394f994fef7534b292c4867ce5e7dec0aa7bdfad"
+
+http_archive(
+    name = "rules_jvm_external",
+    strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
+    sha256 = RULES_JVM_EXTERNAL_SHA,
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
+)
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+
+maven_install(
+    artifacts = [
+      "org.postgresql:postgresql:42.3.6",
+      "log4j:log4j:1.2.17",
+      "org.slf4j:slf4j-api:1.7.5",
+      "org.slf4j:slf4j-log4j12:1.7.5"
+    ],
+    fetch_sources = True,
+    repositories = [
+        "https://repo1.maven.org/maven2",
+    ],
+)
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()
